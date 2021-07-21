@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RunOnMoving : MonoBehaviour
+public class PlayerAnimator : MonoBehaviour
 {
     private Animator _animator;
     private SpriteRenderer _renderer;
