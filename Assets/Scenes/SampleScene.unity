@@ -1065,4 +1065,4 @@ MonoBehaviour:
   _audioSource: {fileID: 2127148045}
   _currStrength: 0
   _maxStrength: 1
-  _soundRate: 0.04
+  _soundRate: 0.5

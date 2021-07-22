@@ -9,10 +9,9 @@ public class Alarm : MonoBehaviour
     [SerializeField] private float _maxStrength;
     [SerializeField] private float _soundRate;
 
-    private float _step;
-    private bool _isEnter = false;
     private float _startVolume;
     private float _endVolume = 1;
+    private Coroutine _VolumeChangerJob;
 
     private void Start()
     {
@@ -25,32 +24,30 @@ public class Alarm : MonoBehaviour
         {
             _audioSource.loop = true;
             _audioSource.Play();
-            _isEnter = true;
-            StartCoroutine(VolumeChanger());
+            StartVolumeChanger(_soundRate);
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         _audioSource.loop = false;
-        _isEnter = false;
-        StartCoroutine(VolumeChanger());
+        StartVolumeChanger(-_soundRate);
     }
 
-    private IEnumerator VolumeChanger()
+    private void StartVolumeChanger(float soundRate)
     {
-        if (_isEnter)
+        if (_VolumeChangerJob != null)
         {
-            _step = _soundRate * Time.deltaTime;
+            StopCoroutine(_VolumeChangerJob);
         }
-        else
-        {
-            _step = -_soundRate * Time.deltaTime;
-        }
+        _VolumeChangerJob = StartCoroutine(VolumeChanger(soundRate));
+    }
 
-        for (_startVolume = 0; _startVolume < _endVolume; _startVolume += _step)
+    private IEnumerator VolumeChanger(float soundRate)
+    {
+        for (_startVolume = 0; _startVolume < _endVolume; _startVolume += soundRate * Time.deltaTime)
         {
-            _audioSource.volume += Mathf.MoveTowards(_currStrength, _maxStrength, _step);
+            _audioSource.volume += Mathf.MoveTowards(_currStrength, _maxStrength, soundRate * Time.deltaTime);
 
             yield return null;
         }
